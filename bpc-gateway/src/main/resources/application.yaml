@@ -1,0 +1,48 @@
+server:
+  port: 9091
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+spring:
+  application:
+    name: bpc-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      discovery:    #是否与服务发现组件进行结合，通过 serviceId(必须设置成大写) 转发到具体的服务实例。
+                    #默认为false，
+                    #设为true便开启通过服务中心的自动根据 serviceId 创建路由的功能。
+        locator:    #路由访问方式：http://Gateway_HOST:Gateway_PORT/大写的serviceId/**，其中微服务应用名默认大写访问。
+          enabled: false
+      enabled: true #如果包含启动程序，但出于某些原因，不希望启用网关，则设置spring.cloud.gateway.enabled=false
+#      routes:
+#        - id: user_route
+#          uri: lb://user-service
+#          predicates:
+#            - Path=/user/**
+#        - id: message_route
+#          uri: lb://message-service
+#          predicates:
+#            - Path=/message/**
+#          filters:
+#            - StripPrefix=1
+
+
+nacos:
+  maxRetry: 3
+  configLongPollTimeout: 60000
+  configRetryTime: 60000
+  config:
+    maxRetry: ${nacos.maxRetry}
+    configLongPollTimeout: ${nacos.configLongPollTimeout}
+    configRetryTime: ${nacos.configRetryTime}
+    server-addr: 127.0.0.1:8848 #nacos的serverAdd配置
+    group: DEFAULT_GROUP #分组的配置
+    file-extension: json
+    data-id: spring-cloud-gateway.json #data-id的配置
